@@ -757,6 +757,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const id = this.getAttribute("href").replace("#", "");
             const target = document.getElementById(id);
             if (!target) return;
+            // Collapse mobile TOC on click below 991px by triggering Webflow's own interaction
+            if (window.innerWidth < 991) {
+                var mToc = document.getElementById("m-toc");
+                if (mToc && mToc.offsetHeight > 60) mToc.click();
+            }
             const top = target.getBoundingClientRect().top + window.pageYOffset - OFFSET;
             window.scrollTo({
                 top: top,
