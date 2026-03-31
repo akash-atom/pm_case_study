@@ -831,7 +831,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var overlay = document.createElement("div");
         overlay.style.cssText = "position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:10;cursor:pointer;";
         var pill = document.createElement("div");
-        pill.style.cssText = "display:flex;align-items:center;gap:12px;padding:14px 32px;border-radius:999px;background:rgba(255,255,255,0.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:18px;font-weight:500;transition:background 0.2s;";
+        pill.style.cssText = "display:flex;align-items:center;gap:12px;padding:14px 32px;border-radius:999px;background:rgba(0,0,0,0.39);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:none;color:#fff;font-size:18px;font-weight:500;transition:background 0.2s;";
         // Play triangle icon
         var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         icon.setAttribute("viewBox", "0 0 24 24");
@@ -842,7 +842,7 @@ document.addEventListener("DOMContentLoaded", function() {
         path.setAttribute("d", "M8 5v14l11-7z");
         icon.appendChild(path);
         var label = document.createElement("span");
-        label.textContent = "Watch Full Case study";
+        label.textContent = "Play video";
         pill.appendChild(icon);
         pill.appendChild(label);
         overlay.appendChild(pill);
@@ -865,7 +865,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 duration: 0.4,
                 ease: "power2.out"
             });
-            pill.style.background = "rgba(255,255,255,0.25)";
+            pill.style.background = "rgba(0,0,0,0.5)";
         });
         overlay.addEventListener("mouseleave", function() {
             gsap.to(pill, {
@@ -874,7 +874,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 duration: 0.6,
                 ease: "elastic.out(1, 0.5)"
             });
-            pill.style.background = "rgba(255,255,255,0.15)";
+            pill.style.background = "rgba(0,0,0,0.39)";
         });
         // Click to play and hide overlay
         overlay.addEventListener("click", function() {
@@ -982,6 +982,53 @@ document.addEventListener("DOMContentLoaded", function() {
         duration: 1,
         ease: "power2.out"
     }, "-=0.5");
+    // ── Number count-up animation ──
+    var numberTargets = [
+        {
+            value: 7.5,
+            suffix: "hrs",
+            decimals: 1
+        },
+        {
+            value: 2,
+            suffix: "hrs",
+            decimals: 0
+        },
+        {
+            value: 2,
+            suffix: "hrs",
+            decimals: 0
+        },
+        {
+            value: 40,
+            suffix: "mins",
+            decimals: 0
+        }
+    ];
+    var numberEls = document.querySelectorAll("[id='anime_number']");
+    numberEls.forEach(function(el, i) {
+        if (!numberTargets[i]) return;
+        var target = numberTargets[i];
+        var counter = {
+            val: 0
+        };
+        el.textContent = "0" + target.suffix;
+        ScrollTrigger.create({
+            trigger: el,
+            start: "top 90%",
+            once: true,
+            onEnter: function() {
+                gsap.to(counter, {
+                    val: target.value,
+                    duration: 1.5,
+                    ease: "power2.out",
+                    onUpdate: function() {
+                        el.textContent = counter.val.toFixed(target.decimals) + target.suffix;
+                    }
+                });
+            }
+        });
+    });
 });
 
 },{}]},["3O61n","6rimH"], "6rimH", "parcelRequireb0d0", {})
