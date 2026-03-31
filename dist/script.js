@@ -764,18 +764,27 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }, true); // capture phase to fire before Webflow's handler
     });
+    var lastActive = null;
     // Highlight active link on scroll
     function setActiveLink() {
         var current = null;
+        var viewportBottom = window.innerHeight;
         for(var i = 0; i < sections.length; i++){
             var rect = sections[i].el.getBoundingClientRect();
-            if (rect.top <= OFFSET + 1) current = sections[i];
+            // Becomes active once 30px into viewport from bottom, stays active after scrolling past
+            if (rect.top <= viewportBottom - 30) current = sections[i];
         }
+        // Keep last highlighted if nothing new qualifies
+        if (current) lastActive = current;
+        else current = lastActive;
         tocLinks.forEach(function(link) {
             link.style.color = link.dataset.originalColor;
             link.style.fontWeight = "";
         });
-        if (current) current.link.style.color = ACTIVE_COLOR;
+        if (current) {
+            current.link.style.color = ACTIVE_COLOR;
+            current.link.style.fontWeight = "bold";
+        }
     }
     // Throttle scroll events
     var ticking = false;
@@ -970,6 +979,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }, "-=0.5");
 });
 
-},{}]},["3O61n","6rimH"], "6rimH", "parcelRequirea0fc", {})
+},{}]},["3O61n","6rimH"], "6rimH", "parcelRequireb0d0", {})
 
 //# sourceMappingURL=script.js.map

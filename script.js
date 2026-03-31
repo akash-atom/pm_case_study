@@ -57,15 +57,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }, true); // capture phase to fire before Webflow's handler
   });
 
+  var lastActive = null;
+
   // Highlight active link on scroll
   function setActiveLink() {
     var current = null;
+    var viewportBottom = window.innerHeight;
 
     for (var i = 0; i < sections.length; i++) {
       var rect = sections[i].el.getBoundingClientRect();
-      if (rect.top <= OFFSET + 1) {
+      // Becomes active once 30px into viewport from bottom, stays active after scrolling past
+      if (rect.top <= viewportBottom - 30) {
         current = sections[i];
       }
+    }
+
+    // Keep last highlighted if nothing new qualifies
+    if (current) {
+      lastActive = current;
+    } else {
+      current = lastActive;
     }
 
     tocLinks.forEach(function (link) {
@@ -75,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (current) {
       current.link.style.color = ACTIVE_COLOR;
+      current.link.style.fontWeight = "bold";
     }
   }
 
