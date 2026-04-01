@@ -65,6 +65,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }, true); // capture phase to fire before Webflow's handler
   });
 
+  // Close #m-toc when clicking anywhere else on the page
+  document.addEventListener("click", function (e) {
+    if (window.innerWidth >= 991) return;
+    var mToc = document.getElementById("m-toc");
+    if (!mToc) return;
+    if (mToc.contains(e.target)) return;
+    if (mToc.offsetHeight > 60) {
+      mToc.click();
+    }
+  });
+
   var lastActive = null;
 
   // Highlight active link on scroll
