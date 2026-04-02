@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
     wrapper.style.width = "100%";
     wrapper.style.height = "100%";
     wrapper.setAttribute("data-plyr-provider", "vimeo");
-    wrapper.setAttribute("data-plyr-embed-id", "1073204727");
+    wrapper.setAttribute("data-plyr-embed-id", "1179547652");
     videoBlock.appendChild(wrapper);
 
     // Init Plyr
