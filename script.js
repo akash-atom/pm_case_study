@@ -4,7 +4,9 @@ plyrStyle.textContent = "--plyr-color-main: #f33f32;" +
   ".plyr--full-ui input[type=range]{color:#f33f32}" +
   ".plyr__control--overlaid{background:#f33f32}" +
   ".plyr__control--overlaid:hover{background:#d63529}" +
-  ".plyr__menu__container [role=menuitemradio][aria-checked=true]::before{background:#f33f32}";
+  ".plyr__menu__container [role=menuitemradio][aria-checked=true]::before{background:#f33f32}" +
+  "[id^='vertical_video-'] .plyr__control--overlaid{display:none!important}" +
+  "[id^='vertical_video-'] .plyr__controls{display:none!important}";
 document.head.appendChild(plyrStyle);
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -230,6 +232,79 @@ document.addEventListener("DOMContentLoaded", function () {
       if (plyrBtn) plyrBtn.style.display = "none";
     });
   }
+
+  // ── Vertical Video Players ──
+  var verticalVideos = [
+    { containerId: "vertical_video-1", vimeoId: "1179493915" },
+    { containerId: "vertical_video-2", vimeoId: "1179494833" },
+    { containerId: "vertical_video-3", vimeoId: "1179489548" }
+  ];
+
+  verticalVideos.forEach(function (vid) {
+    var container = document.getElementById(vid.containerId);
+    if (!container) return;
+
+    container.style.position = "relative";
+    container.style.overflow = "hidden";
+    container.style.background = "#000";
+
+    // Create Vimeo embed
+    var vWrapper = document.createElement("div");
+    vWrapper.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;";
+    vWrapper.setAttribute("data-plyr-provider", "vimeo");
+    vWrapper.setAttribute("data-plyr-embed-id", vid.vimeoId);
+    container.appendChild(vWrapper);
+
+    var vPlayer = new Plyr(vWrapper, {
+      resetOnEnd: true,
+      controls: []
+    });
+
+    // Play button overlay — circle with play icon only
+    var vOverlay = document.createElement("div");
+    vOverlay.style.cssText = "position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:10;cursor:pointer;";
+
+    var circle = document.createElement("div");
+    circle.style.cssText = "display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,0.39);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:background 0.2s;";
+
+    var vIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    vIcon.setAttribute("viewBox", "0 0 24 24");
+    vIcon.setAttribute("fill", "white");
+    vIcon.setAttribute("width", "22");
+    vIcon.setAttribute("height", "22");
+    var vPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    vPath.setAttribute("d", "M8 5v14l11-7z");
+    vIcon.appendChild(vPath);
+
+    circle.appendChild(vIcon);
+    vOverlay.appendChild(circle);
+    container.appendChild(vOverlay);
+
+    // Hover
+    vOverlay.addEventListener("mouseenter", function () {
+      circle.style.background = "rgba(0,0,0,0.5)";
+    });
+    vOverlay.addEventListener("mouseleave", function () {
+      circle.style.background = "rgba(0,0,0,0.39)";
+    });
+
+    // Click to play
+    vOverlay.addEventListener("click", function () {
+      vPlayer.play();
+      vOverlay.style.display = "none";
+    });
+
+    // Show overlay on end
+    vPlayer.on("ended", function () {
+      vOverlay.style.display = "flex";
+    });
+
+    // Hide Plyr's default play button
+    vPlayer.on("ready", function () {
+      var btn = container.querySelector(".plyr__control--overlaid");
+      if (btn) btn.style.display = "none";
+    });
+  });
 
   // ── Hero staggered fade-up animation ──
   gsap.set([".aw_logo_top", ".cross_icon", ".pm_logo_top"], {
