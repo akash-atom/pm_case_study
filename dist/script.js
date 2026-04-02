@@ -1033,7 +1033,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ease: "power2.out"
         }, "-=0.5");
     }
-    // ── Content section scroll-triggered fade-up ──
+    // ── Content section scroll-triggered fade-up (waits for hero) ──
     gsap.registerPlugin(ScrollTrigger);
     gsap.set([
         ".case_study_toc_wrapper",
@@ -1042,23 +1042,27 @@ document.addEventListener("DOMContentLoaded", function() {
         opacity: 0,
         y: 40
     });
-    var contentTl = gsap.timeline({
-        scrollTrigger: {
+    heroTl.eventCallback("onComplete", function() {
+        ScrollTrigger.create({
             trigger: "#content_section",
-            start: "top 80%"
-        }
+            start: "top 80%",
+            once: true,
+            onEnter: function() {
+                var contentTl = gsap.timeline();
+                contentTl.to(".case_study_toc_wrapper", {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out"
+                }).to(".case_study_block", {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out"
+                }, "-=0.5");
+            }
+        });
     });
-    contentTl.to(".case_study_toc_wrapper", {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power2.out"
-    }).to(".case_study_block", {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power2.out"
-    }, "-=0.5");
     // ── Number count-up animation ──
     var numberTargets = [
         {
